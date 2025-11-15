@@ -6,7 +6,9 @@ grep -qxF "net.ipv6.conf.all.disable_ipv6 = 1" /etc/sysctl.conf || echo "net.ipv
 grep -qxF "net.ipv6.conf.default.disable_ipv6 = 1" /etc/sysctl.conf || echo "net.ipv6.conf.default.disable_ipv6 = 1" | tee -a /etc/sysctl.conf
 grep -qxF "net.ipv6.conf.lo.disable_ipv6 = 1" /etc/sysctl.conf || echo "net.ipv6.conf.lo.disable_ipv6 = 1" | tee -a /etc/sysctl.conf
 
-# foreman требует в hosts запись для fqdn, если ip динамический
+# foreman требует в hosts запись fqdn для 127.0.0.1, если ip динамический; запись должна быть первой, не должно быть других записей для fqdn
+sed -i "/^127.0.1.1 $(hostname -f) $(hostname -s)/d" /etc/hosts
+sed -i "/^127.0.0.1 $(hostname -f) $(hostname -s)/d" /etc/hosts
 grep -qxF "127.0.0.1 $(hostname -f) $(hostname -s)" /etc/hosts || sed -i "1i127.0.0.1 $(hostname -f) $(hostname -s)" /etc/hosts
 
 apt update && apt dist-upgrade -y
