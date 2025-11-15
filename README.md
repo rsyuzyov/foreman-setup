@@ -16,7 +16,7 @@
     4 ядра (min 2)
     8 ГБ ОЗУ (min 4)
 
-## Установка на хост-системе
+## Установка скриптом
 
 Запустить с повышенными правами:
 ```bash
@@ -27,7 +27,7 @@ chmod +x foreman-setup.sh
 ./foreman-setup.sh
 ```
 
-## Установка через Docker
+## Установка в docker
 ```bash
 git clone https://github.com/rsyuzyov/foreman-setup.git
 cd foreman-setup
@@ -44,7 +44,6 @@ https://foreman.local
 ```bash
 echo "127.0.0.1 foreman.local" | sudo tee -a /etc/hosts
 ```
-
 Управление контейнером:
 ```bash
 docker-compose up
