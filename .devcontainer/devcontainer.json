@@ -1,0 +1,6 @@
+{
+  "image": "debian:12",
+  "postCreateCommand": "apt update && apt install -y нужные_пакеты",
+  "settings": {},
+  "extensions": []
+}
