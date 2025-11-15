@@ -1,6 +1,8 @@
 {
-  "image": "mcr.microsoft.com/devcontainers/base:bookworm",
-  "postCreateCommand": "apt update && apt install -y",
+  "name": "Debian 12 (Bookworm) devcontainer",
+  "image": "mcr.microsoft.com/vscode/devcontainers/base:0-debian-12",
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y build-essential curl git ca-certificates gnupg",
+  "remoteUser": "vscode",
   "settings": {},
   "extensions": []
 }
