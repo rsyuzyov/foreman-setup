@@ -1,15 +1,29 @@
 #!/bin/bash
 set -e
 
+. /etc/os-release
+if [[ "$ID" != "debian" || "$VERSION_ID" != "12" ]]; then
+  echo "Неподходящая версия ОС: ${PRETTY_NAME}, установка рассчитана на debian 12"
+  exit 1
+fi
+
 # apt по умолчанию пытается работать на ipv6, но не всегда справляется
 grep -qxF "net.ipv6.conf.all.disable_ipv6 = 1" /etc/sysctl.conf || echo "net.ipv6.conf.all.disable_ipv6 = 1" | tee -a /etc/sysctl.conf
 grep -qxF "net.ipv6.conf.default.disable_ipv6 = 1" /etc/sysctl.conf || echo "net.ipv6.conf.default.disable_ipv6 = 1" | tee -a /etc/sysctl.conf
 grep -qxF "net.ipv6.conf.lo.disable_ipv6 = 1" /etc/sysctl.conf || echo "net.ipv6.conf.lo.disable_ipv6 = 1" | tee -a /etc/sysctl.conf
 
 # foreman требует в hosts запись fqdn для 127.0.0.1, если ip динамический; запись должна быть первой, не должно быть других записей для fqdn
-sed -i "/^127.0.1.1 $(hostname -f) $(hostname -s)/d" /etc/hosts
-sed -i "/^127.0.0.1 $(hostname -f) $(hostname -s)/d" /etc/hosts
-grep -qxF "127.0.0.1 $(hostname -f) $(hostname -s)" /etc/hosts || sed -i "1i127.0.0.1 $(hostname -f) $(hostname -s)" /etc/hosts
+# Используем facter для получения FQDN, если доступен
+if [ -x /opt/puppetlabs/bin/facter ]; then
+    HOSTNAME_F=$(/opt/puppetlabs/bin/facter fqdn)
+else
+    HOSTNAME_F=$(hostname -f)
+fi
+HOSTNAME_S=$(hostname -s)
+grep -v "^127.0.1.1 " /etc/hosts | grep -v "^127.0.0.1 $HOSTNAME_F" | grep -v "^127.0.0.1 $HOSTNAME_S$" > /tmp/hosts.tmp
+grep -qxF "127.0.0.1 $HOSTNAME_F $HOSTNAME_S" /tmp/hosts.tmp || sed -i "1i127.0.0.1 $HOSTNAME_F $HOSTNAME_S" /tmp/hosts.tmp
+cat /tmp/hosts.tmp > /etc/hosts
+rm -f /tmp/hosts.tmp
 
 apt update && apt dist-upgrade -y
 apt install -y ca-certificates wget gnupg lsb-release locales
