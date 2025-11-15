@@ -35,6 +35,7 @@ systemctl start postgresql
 dpkg -i ./assets/*.deb || true
 apt --fix-broken install -y 
 
+apt install -y foreman-installer
 apt install -y ruby-foreman-fog-proxmox
 
 foreman-installer --enable-foreman-plugin-ansible --enable-foreman-proxy-plugin-ansible
