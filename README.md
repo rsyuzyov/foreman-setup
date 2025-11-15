@@ -1,20 +1,75 @@
 # Установка foreman
-Несмотря на заявления разработчиков, что foreman - зрелый продукт, его нельзя просто взять и поставить, пользователи должны страдать. Хотя возможно именно в этом продукт достиг максимальной зрелости.  
-Для облегчения страданий был создан этот репозиторий.  
+Несмотря на заявления разработчиков, что foreman - зрелый продукт, его нельзя просто взять и поставить, пользователи должны страдать. Хотя возможно именно в этом продукт достиг максимальной зрелости.
+Для облегчения страданий был создан этот репозиторий.
 
 ## Требования
+
+### Для установки на хост-системе
     debian 12 (не 13, слишком свежий ruby, и не centos - там другие страдания)
     4 ядра (min 2)
     8 ГБ ОЗУ (min 4)
 
-## Установка
+### Для установки через Docker
+    Docker 20.10+
+    Docker Compose 2.0+
+    4 ГБ свободного места на диске
+    4 ядра (min 2)
+    8 ГБ ОЗУ (min 4)
+
+## Установка на хост-системе
+
 Запустить с повышенными правами:
-```
+```bash
 apt install git -y
 git clone https://github.com/rsyuzyov/foreman-setup.git
 cd foreman-setup
 chmod +x foreman-setup.sh
 ./foreman-setup.sh
+```
+
+## Установка через Docker
+```bash
+git clone https://github.com/rsyuzyov/foreman-setup.git
+cd foreman-setup
+docker-compose up -d --build
+docker-compose logs -f foreman
+```
+После завершения установки, Foreman будет доступен по адресу:
+```
+https://foreman.local
+Логин: admin
+Пароль: changeme
+```
+**Важно:** Добавьте `foreman.local` в файл `/etc/hosts` вашей хост-системы:
+```bash
+echo "127.0.0.1 foreman.local" | sudo tee -a /etc/hosts
+```
+
+Управление контейнером:
+```bash
+docker-compose up
+docker-compose down
+docker-compose restart
+docker-compose logs -f
+docker-compose exec foreman bash
+```
+### Настройка FQDN
+Чтобы использовать собственное доменное имя, нужно изменить переменную окружения в [`docker-compose.yml`](docker-compose.yml):
+```yaml
+environment:
+  - FOREMAN_FQDN=your.domain.com
+```
+
+### Данные и персистентность
+Данные сохраняются в volumes:
+- `foreman_postgresql` - база PostgreSQL
+- `foreman_config` - конфигурация Foreman
+- `foreman_data` - данные приложения
+
+Резервное копирование:
+```bash
+docker-compose exec foreman tar czf /tmp/foreman-backup.tar.gz /etc/foreman /var/lib/foreman
+docker cp foreman:/tmp/foreman-backup.tar.gz ./foreman-backup.tar.gz
 ```
 
 ## Интересное
