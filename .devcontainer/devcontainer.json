@@ -1,6 +1,6 @@
 {
   "image": "mcr.microsoft.com/devcontainers/base:bookworm",
-  "postCreateCommand": "apt update && apt install -y нужные_пакеты",
+  "postCreateCommand": "apt update && apt install -y",
   "settings": {},
   "extensions": []
 }
