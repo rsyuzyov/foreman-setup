@@ -46,6 +46,44 @@ apt --fix-broken install -y
 apt install -y foreman-installer
 apt install -y ruby-foreman-fog-proxmox
 
-foreman-installer --enable-foreman-plugin-ansible --enable-foreman-proxy-plugin-ansible
+foreman-installer \
+  --enable-apache-mod-status \
+  --enable-foreman \
+  --enable-foreman-cli \
+  --enable-foreman-cli-ansible \
+  --enable-foreman-cli-bootdisk \
+  --enable-foreman-cli-discovery \
+  --enable-foreman-cli-puppet \
+  --enable-foreman-cli-remote-execution \
+  --enable-foreman-cli-ssh \
+  --enable-foreman-cli-tasks \
+  --enable-foreman-cli-templates \
+  --enable-foreman-cli-webhooks \
+  --enable-foreman-proxy \
+  --enable-puppet \
+  --enable-foreman-plugin-ansible \
+  --enable-foreman-plugin-bootdisk \
+  --enable-foreman-plugin-default-hostgroup \
+  --enable-foreman-plugin-dhcp-browser \
+  --enable-foreman-plugin-discovery \
+  --enable-foreman-plugin-expire-hosts \
+  --enable-foreman-plugin-monitoring \
+  --enable-foreman-plugin-proxmox \
+  --enable-foreman-plugin-puppet \
+  --enable-foreman-plugin-puppetdb \
+  --enable-foreman-plugin-remote-execution \
+  --enable-foreman-plugin-rescue \
+  --enable-foreman-plugin-snapshot-management \
+  --enable-foreman-plugin-statistics \
+  --enable-foreman-plugin-tasks \
+  --enable-foreman-plugin-templates \
+  --enable-foreman-plugin-webhooks \
+  --enable-foreman-proxy-plugin-ansible \
+  --enable-foreman-proxy-plugin-discovery \
+  --enable-foreman-proxy-plugin-monitoring \
+  --enable-foreman-proxy-plugin-remote-execution-script \
+  --enable-foreman-proxy-plugin-shellhooks \
+  --foreman-initial-admin-username=admin \
+  --foreman-initial-admin-password=changeme
 
 echo "Foreman installation completed. Access the web interface at: https://$(hostname -f)"
