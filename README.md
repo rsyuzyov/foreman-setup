@@ -26,6 +26,8 @@ git clone https://github.com/rsyuzyov/foreman-setup.git
 cd foreman-setup
 chmod +x foreman-setup.sh
 ./foreman-setup.sh
+cd ..
+rm -r foreman-setup
 ```
 
 ## Примечания
