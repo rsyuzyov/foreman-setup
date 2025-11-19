@@ -20,6 +20,28 @@ git clone https://github.com/rsyuzyov/foreman-setup.git
 cd foreman-setup
 chmod +x foreman-setup.sh
 ./foreman-setup.sh
+cd ..
+```
+
+### Примеры использования
+Запуск установки версии по умолчанию (3.17):
+```bash
+./foreman-setup.sh
+```
+
+Запуск установки конкретной версии (например, 3.16): 
+```bash
+./foreman-setup.sh -v 3.16
+```
+
+Запуск установки  (без флага --skip-checks-i-know-better):
+```bash
+./foreman-setup.sh -check
+```
+
+Комбинирование параметров:
+```bash
+./foreman-setup.sh -v 3.16 -check
 ```
 
 ## Примечания

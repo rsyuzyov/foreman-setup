@@ -1,6 +1,34 @@
 #!/bin/bash
 set -e
 
+FOREMAN_VERSION="3.17"
+SKIP_CHECKS="--skip-checks-i-know-better"
+
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -v)
+      FOREMAN_VERSION="$2"
+      shift 2
+      ;;
+    -check)
+      SKIP_CHECKS=""
+      shift
+      ;;
+    *)
+      echo "Unknown option: $1"
+      exit 1
+      ;;
+  esac
+done
+
+if [ -z "$SKIP_CHECKS" ]; then
+  CHECKS_STATUS="включены"
+else
+  CHECKS_STATUS="отключены"
+fi
+
+echo "Устанавливаемая версия Foreman: $FOREMAN_VERSION, проверки $CHECKS_STATUS"
+
 . /etc/os-release
 if [[ "$ID" != "debian" || "$VERSION_ID" != "12" ]]; then
   echo "Неподходящая версия ОС: ${PRETTY_NAME}, установка рассчитана на debian 12"
@@ -37,8 +65,8 @@ export LC_CTYPE=ru_RU.UTF-8
 
 [ -f /usr/share/keyrings/foreman.gpg ] && rm -f /usr/share/keyrings/foreman.gpg
 wget -O- https://deb.theforeman.org/pubkey.gpg | gpg --dearmor -o /usr/share/keyrings/foreman.gpg 2>/dev/null || true
-echo "deb [signed-by=/usr/share/keyrings/foreman.gpg] http://deb.theforeman.org/ bookworm 3.17" | tee /etc/apt/sources.list.d/foreman.list
-echo "deb [signed-by=/usr/share/keyrings/foreman.gpg] http://deb.theforeman.org/ plugins 3.17" | tee /etc/apt/sources.list.d/foreman-plugins.list
+echo "deb [signed-by=/usr/share/keyrings/foreman.gpg] http://deb.theforeman.org/ bookworm $FOREMAN_VERSION" | tee /etc/apt/sources.list.d/foreman.list
+echo "deb [signed-by=/usr/share/keyrings/foreman.gpg] http://deb.theforeman.org/ plugins $FOREMAN_VERSION" | tee /etc/apt/sources.list.d/foreman-plugins.list
 apt update
 
 dpkg -i ./assets/*.deb
@@ -48,7 +76,7 @@ systemctl enable postgresql
 systemctl start postgresql
 
 foreman-installer \
-  --skip-checks-i-know-better \
+  $SKIP_CHECKS \
   --enable-apache-mod-status \
   --enable-foreman \
   --enable-foreman-cli \
