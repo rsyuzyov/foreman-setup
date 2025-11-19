@@ -39,6 +39,11 @@ cd ..
 ./foreman-setup.sh -pghost srv-db -pglogin postgres -pgpass yourpwd
 ```
 
+Использование внешнего сервера Redis:
+```bash
+./foreman-setup.sh -redishost srv-redis -redispass yourpwd
+```
+
 ## Примечания
 ### Репозиторий puppet
 Весьма странная история: при установке пакетов скорость рандомно падает ниже 1 Кб/с и установка прерывается, хоть через ipv6, хоть через ipv4.  

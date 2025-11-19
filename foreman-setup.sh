@@ -26,6 +26,14 @@ while [[ $# -gt 0 ]]; do
       PG_PASS="$2"
       shift 2
       ;;
+    -redishost)
+      REDIS_HOST="$2"
+      shift 2
+      ;;
+    -redispass)
+      REDIS_PASS="$2"
+      shift 2
+      ;;
     *)
       echo "Unknown option: $1"
       exit 1
@@ -43,6 +51,10 @@ echo "Устанавливаемая версия Foreman: $FOREMAN_VERSION, п�
 
 if [ -n "$PG_HOST" ]; then
   echo "Используется внешний PostgreSQL: $PG_HOST"
+fi
+
+if [ -n "$REDIS_HOST" ]; then
+  echo "Используется внешний Redis: $REDIS_HOST"
 fi
 
 . /etc/os-release
@@ -102,9 +114,16 @@ else
   DB_ARGS=""
 fi
 
+if [ -n "$REDIS_HOST" ]; then
+  REDIS_ARGS="--foreman-redis-manage=false --foreman-redis-host=$REDIS_HOST --foreman-redis-password=$REDIS_PASS"
+else
+  REDIS_ARGS=""
+fi
+
 foreman-installer \
   $SKIP_CHECKS \
   $DB_ARGS \
+  $REDIS_ARGS \
   --enable-apache-mod-status \
   --enable-foreman \
   --enable-foreman-cli \
