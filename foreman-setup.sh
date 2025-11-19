@@ -100,13 +100,14 @@ apt update
 dpkg -i ./assets/*.deb
 apt --fix-broken install -y 
 
-if [ -n "$PG_HOST" ]; then
-  apt install -y -o Acquire::ForceIPv4=true openjdk-17-jdk foreman-installer
-else
-  apt install -y -o Acquire::ForceIPv4=true openjdk-17-jdk postgresql foreman-installer
+if [ "$PG_HOST" ]; then
+  apt install -y -o Acquire::ForceIPv4=true  postgresql
   systemctl enable postgresql
   systemctl start postgresql
 fi
+
+apt install -y -o Acquire::ForceIPv4=true openjdk-17-jdk
+apt install -y -o Acquire::ForceIPv4=true foreman-installer
 
 if [ -n "$PG_HOST" ]; then
   DB_ARGS="--foreman-db-manage=false --foreman-db-host=$PG_HOST --foreman-db-username=$PG_LOGIN --foreman-db-password=$PG_PASS"
