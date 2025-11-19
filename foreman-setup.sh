@@ -91,7 +91,7 @@ export LANG=ru_RU.UTF-8
 export LC_ALL=ru_RU.UTF-8
 export LC_CTYPE=ru_RU.UTF-8
 
-apt install -y -o Acquire::ForceIPv4=true openjdk-17-jdk
+apt install -y -o Acquire::ForceIPv4=true openjdk-17-jre-headless 
 
 if [ "$PG_HOST" ]; then
   apt install -y -o Acquire::ForceIPv4=true  postgresql
